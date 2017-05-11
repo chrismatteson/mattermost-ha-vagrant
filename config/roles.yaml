@@ -1,0 +1,14 @@
+---
+roles:
+  posix_noagent:
+    private_networks:
+      - {ip: '0.0.0.0', auto_network: true}
+    provisioners:
+      - type: shell
+        name: "nameserver"
+        inline: "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
+      - type: hosts
+        sync_hosts: true
+      - type: shell
+        name: "mattermostsetup"
+        path: "scripts/rhel7.sh"

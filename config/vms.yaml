@@ -1,0 +1,11 @@
+---
+ # Hashicorp boxes are used by default as per vms.yaml, but there are options
+ # for other boxes in the boxes.yaml file.
+vms:
+  - name: "rhel-7-mm-ha-1"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "posix_noagent" ]
+
+  - name: "rhel-7-mm-ha-2"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "posix_noagent" ]

@@ -2,10 +2,54 @@
  # Hashicorp boxes are used by default as per vms.yaml, but there are options
  # for other boxes in the boxes.yaml file.
 vms:
+# Enterprise Linux 7 demo
   - name: "rhel-7-mm-ha-1"
     box: "puppetlabs/centos-7.2-64-nocm"
-    roles: [ "posix_noagent" ]
+    roles: [ "rhel-7-mm-ha" ]
 
   - name: "rhel-7-mm-ha-2"
     box: "puppetlabs/centos-7.2-64-nocm"
-    roles: [ "posix_noagent" ]
+    roles: [ "rhel-7-mm-ha" ]
+
+  - name: "rhel-7-ha-proxy"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "haproxy" ]
+
+# Enterprise Linux 6 demo
+  - name: "rhel-6-mm-ha-1"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "rhel-7-mm-ha" ]
+
+  - name: "rhel-6-mm-ha-2"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "rhel-7-mm-ha" ]
+
+  - name: "rhel-6-ha-proxy"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "haproxy" ]
+
+# Ubuntu 14.04 demo
+  - name: "ubuntu-14.04-mm-ha-1"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "rhel-7-mm-ha" ]
+
+  - name: "ubuntu-14.04-mm-ha-2"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "rhel-7-mm-ha" ]
+
+  - name: "ubuntu-14.04-ha-proxy"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "haproxy" ]
+
+# Ubuntu 16.04 demo
+  - name: "ubuntu-16.04-mm-ha-1"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "rhel-7-mm-ha" ]
+
+  - name: "ubuntu-16.04-mm-ha-2"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "rhel-7-mm-ha" ]
+
+  - name: "ubuntu-16.04-ha-proxy"
+    box: "puppetlabs/centos-7.2-64-nocm"
+    roles: [ "haproxy" ]

@@ -17,15 +17,15 @@ vms:
 
 # Enterprise Linux 6 demo
   - name: "rhel-6-mm-ha-1"
-    box: "puppetlabs/centos-7.2-64-nocm"
-    roles: [ "rhel-7-mm-ha" ]
+    box: "centos-65-x64-vbox436-nocm"
+    roles: [ "rhel-6-mm-ha" ]
 
   - name: "rhel-6-mm-ha-2"
-    box: "puppetlabs/centos-7.2-64-nocm"
-    roles: [ "rhel-7-mm-ha" ]
+    box: "centos-65-x64-vbox436-nocm"
+    roles: [ "rhel-6-mm-ha" ]
 
   - name: "rhel-6-ha-proxy"
-    box: "puppetlabs/centos-7.2-64-nocm"
+    box: "centos-65-x64-vbox436-nocm"
     roles: [ "haproxy" ]
 
 # Ubuntu 14.04 demo

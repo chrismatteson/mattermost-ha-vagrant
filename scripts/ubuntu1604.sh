@@ -21,31 +21,44 @@ wget https://releases.mattermost.com/3.8.2/mattermost-3.8.2-linux-amd64.tar.gz
 tar -xvzf mattermost-*.tar.gz
 sudo mv mattermost /opt
 #sudo mkdir /opt/mattermost/data
-sudo ln -s /vagrant/data/ubuntu1404 /opt/mattermost/data
+sudo ln -s /vagrant/data/ubuntu1604 /opt/mattermost/data
 sudo useradd --system --user-group mattermost
 sudo chown -R mattermost:mattermost /opt/mattermost
 sudo chmod -R g+w /opt/mattermost
-sudo sed -i '/"DataSource":/c\        "DataSource": "mmuser:Password42!@tcp(ubuntu-1404-mm-ha-1:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s",' /opt/mattermost/config/config.json
-#sudo sed -i '/"DataSourceReplicas":/c\        "DataSourceReplicas": ["mmuser:Password42!@tcp(ubuntu-1404-mm-ha-2:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s"],' /opt/mattermost/config/config.json
+sudo sed -i '/"DataSource":/c\        "DataSource": "mmuser:Password42!@tcp(ubuntu-1504-mm-ha-1:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s",' /opt/mattermost/config/config.json
+#sudo sed -i '/"DataSourceReplicas":/c\        "DataSourceReplicas": ["mmuser:Password42!@tcp(ubuntu-1604-mm-ha-2:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s"],' /opt/mattermost/config/config.json
 sudo sed -i '/"SqlSettings"/{n;s/postgres/mysql/g}' /opt/mattermost/config/config.json
 sudo sed -i '/"ClusterSettings"/{n;s/false/true/g}' /opt/mattermost/config/config.json
-sudo sed -i '/"InterNodeUrls"/c\        "InterNodeUrls": ["http://ubuntu-1404-mm-ha-1","http://ubuntu-1404-mm-ha-2"]' /opt/mattermost/config/config.json
-sudo cat <<EOF > /etc/init/mattermost.conf
-start on runlevel [2345]
-stop on runlevel [016]
-respawn
-limit nofile 50000 50000
-chdir /opt/mattermost
-setuid mattermost
-exec bin/platform
+sudo sed -i '/"InterNodeUrls"/c\        "InterNodeUrls": ["http://ubuntu-1604-mm-ha-1","http://ubuntu-1604-mm-ha-2"]' /opt/mattermost/config/config.json
+sudo cat <<EOF > /lib/systemd/system/mattermost.service
+[Unit]
+Description=Mattermost
+After=network.target
+After=postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=simple
+ExecStart=/opt/mattermost/bin/platform
+Restart=always
+RestartSec=10
+WorkingDirectory=/opt/mattermost
+User=mattermost
+Group=mattermost
+LimitNOFILE=49152
+
+[Install]
+WantedBy=multi-user.target
 EOF
-sudo chkconfig mattermost on
+sudo systemctl daemon-relaod
+sudo systemctl start mattermost.service
+sudo systemctl enable mattermost.service
 sudo iptables -A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
 sudo iptables -A INPUT -p tcp -m tcp --dport 8065 -j ACCEPT
 sudo iptables -A INPUT -p tcp -m tcp --dport 8075 -j ACCEPT
-iptables-save | sudo tee /etc/iptables/rules.v4
+iptables-save | sudo tee /etc/sysconfig/iptables
 (cd /opt/mattermost/bin/ && ./platform license upload /vagrant/license.mattermost-license)
-sudo service mattermost restart
+sudo start mattermost
 
 #Install NGINX
 sudo apt-get install nginx -y
@@ -55,8 +68,8 @@ sudo service nginx start
 #Configure NGINX
 sudo cat <<EOF > /etc/nginx/sites-available/mattermost
 upstream backend {
-   server ubuntu-1404-mm-ha-1:8065;
-   server ubuntu-1404-mm-ha-2:8065;
+   server ubuntu-1604-mm-ha-1:8065;
+   server ubuntu-1604-mm-ha-2:8065;
 }
 
 proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=mattermost_cache:10m max_size=3g inactive=120m use_temp_path=off;
@@ -102,7 +115,6 @@ EOF
 sudo rm /etc/nginx/sites-enabled/default
 sudo ln -s /etc/nginx/sites-available/mattermost /etc/nginx/sites-enabled/mattermost
 sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-iptables-save | sudo tee /etc/iptables/rules.v4
-sudo yum install iptables-persistent
+iptables-save | sudo tee /etc/sysconfig/iptables
 sudo service nginx restart
 

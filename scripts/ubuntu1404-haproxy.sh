@@ -122,4 +122,5 @@ EOF
 sudo chkconfig haproxy on
 sudo service haproxy start
 sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-iptables-save | sudo tee /etc/sysconfig/iptables
+sudo apt-get install iptables-persistent
+iptables-save | sudo tee /etc/iptables/rules.v4

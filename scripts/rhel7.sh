@@ -53,12 +53,9 @@ sudo firewall-cmd --zone=public --add-port=3306/tcp --permanent
 sudo firewall-cmd --zone=public --add-port=8065/tcp --permanent
 sudo firewall-cmd --zone=public --add-port=8075/tcp --permanent
 sudo systemctl restart firewalld
+(cd /opt/mattermost/bin/  && ./platform license upload /vagrant/license.mattermost-license)
 sudo systemctl enable mattermost
 sudo systemctl start mattermost
-
-# Install license
-sudo /opt/mattermost/bin/platform license upload /vagrant/license.mattermost-license
-sudo systemctl restart mattermost
 
 #Install NGINX
 sudo cat <<EOF > /etc/yum.repos.d/nginx.repo

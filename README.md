@@ -26,8 +26,8 @@ This repository can be used by:
 ## Configuration
 Each set of three VMs is configured with:
 1) HA Proxy which loadbalances between nginx on each mattermost node
-2) Nginx on each node configured to proxy mattermost serves on both nodes
-3) Mattermost installed on each node and configured with a trial license in and utilizing HA
+2) Nginx on each node configured to proxy mattermost servers on both nodes
+3) Mattermost installed on each node and configured with a trial license and utilizing HA
 4) Mysql loaded on each node with only the first node being utilized
 
 ## Known Issues

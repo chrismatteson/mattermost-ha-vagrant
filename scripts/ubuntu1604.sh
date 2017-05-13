@@ -23,13 +23,13 @@ sudo mv mattermost /opt
 #sudo mkdir /opt/mattermost/data
 sudo ln -s /vagrant/data/ubuntu1604 /opt/mattermost/data
 sudo useradd --system --user-group mattermost
-sudo chown -R mattermost:mattermost /opt/mattermost
-sudo chmod -R g+w /opt/mattermost
 sudo sed -i '/"DataSource":/c\        "DataSource": "mmuser:Password42!@tcp(ubuntu-1604-mm-ha-1:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s",' /opt/mattermost/config/config.json
 #sudo sed -i '/"DataSourceReplicas":/c\        "DataSourceReplicas": ["mmuser:Password42!@tcp(ubuntu-1604-mm-ha-2:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s"],' /opt/mattermost/config/config.json
 sudo sed -i '/"SqlSettings"/{n;s/postgres/mysql/g}' /opt/mattermost/config/config.json
 sudo sed -i '/"ClusterSettings"/{n;s/false/true/g}' /opt/mattermost/config/config.json
 sudo sed -i '/"InterNodeUrls"/c\        "InterNodeUrls": ["http://ubuntu-1604-mm-ha-1","http://ubuntu-1604-mm-ha-2"]' /opt/mattermost/config/config.json
+sudo chown -R mattermost:mattermost /opt/mattermost
+sudo chmod -R g+w /opt/mattermost
 sudo cat <<EOF > /lib/systemd/system/mattermost.service
 [Unit]
 Description=Mattermost

@@ -36,7 +36,7 @@ stop on runlevel [016]
 respawn
 limit nofile 50000 50000
 chdir /opt/mattermost
-setuid mattermost
+#setuid mattermost
 exec bin/platform
 EOF
 sudo chkconfig mattermost on
@@ -59,7 +59,7 @@ upstream backend {
    server ubuntu-1404-mm-ha-2:8065;
 }
 
-proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=mattermost_cache:10m max_size=3g inactive=120m use_temp_path=off;
+proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=mattermost_cache:10m max_size=3g inactive=120m;
 
 server {
    listen 80;
@@ -91,7 +91,6 @@ server {
        proxy_buffer_size 16k;
        proxy_read_timeout 600s;
        proxy_cache mattermost_cache;
-       proxy_cache_revalidate on;
        proxy_cache_min_uses 2;
        proxy_cache_use_stale timeout;
        proxy_cache_lock on;
@@ -103,6 +102,6 @@ sudo rm /etc/nginx/sites-enabled/default
 sudo ln -s /etc/nginx/sites-available/mattermost /etc/nginx/sites-enabled/mattermost
 sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
 iptables-save | sudo tee /etc/iptables/rules.v4
-sudo yum install iptables-persistent
+sudo apt-get install iptables-persistent
 sudo service nginx restart
 

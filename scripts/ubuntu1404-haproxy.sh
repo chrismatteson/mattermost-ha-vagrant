@@ -119,7 +119,7 @@ backend mattermost
     server  mm-ha-1 $MMHA1IP:80 check
     server  mm-ha-2 $MMHA2IP:80 check
 EOF
-sudo chkconfig haproxy on
+sudo sed -i '/ENABLED/c\ENABLED=1' /etc/defaultmysql/haproxy
 sudo service haproxy start
 sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
 sudo apt-get install iptables-persistent

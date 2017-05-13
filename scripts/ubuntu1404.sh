@@ -5,9 +5,10 @@ sudo apt-get update -y
 sudo apt-get upgrade -y
 
 #Install mysql
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password Password42!'
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password Password42!'
 sudo apt-get install mysql-server-5.6 -y
-mysql -u root -p"`sudo grep 'temporary password' /var/log/mysqld.log | grep -oE '[^ ]+$'`" --connect-expired-password <<MYSQL_INPUT
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'Password42!';
+mysql -u root -p"Password42!" <<MYSQL_INPUT
 create user 'mmuser'@'%' identified by 'Password42!';
 create database mattermost;
 grant all privileges on mattermost.* to 'mmuser'@'%';
@@ -18,15 +19,15 @@ wget https://releases.mattermost.com/3.8.2/mattermost-3.8.2-linux-amd64.tar.gz
 tar -xvzf mattermost-*.tar.gz
 sudo mv mattermost /opt
 #sudo mkdir /opt/mattermost/data
-sudo ln -s /vagrant/data/rhel7 /opt/mattermost/data
+sudo ln -s /vagrant/data/ubuntu1404 /opt/mattermost/data
 sudo useradd --system --user-group mattermost
 sudo chown -R mattermost:mattermost /opt/mattermost
 sudo chmod -R g+w /opt/mattermost
-sudo sed -i '/"DataSource":/c\        "DataSource": "mmuser:Password42!@tcp(rhel-6-mm-ha-1:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s",' /opt/mattermost/config/config.json
-#sudo sed -i '/"DataSourceReplicas":/c\        "DataSourceReplicas": ["mmuser:Password42!@tcp(rhel-6-mm-ha-2:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s"],' /opt/mattermost/config/config.json
+sudo sed -i '/"DataSource":/c\        "DataSource": "mmuser:Password42!@tcp(ubuntu-14.04-mm-ha-1:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s",' /opt/mattermost/config/config.json
+#sudo sed -i '/"DataSourceReplicas":/c\        "DataSourceReplicas": ["mmuser:Password42!@tcp(ubuntu-14.04-mm-ha-2:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s"],' /opt/mattermost/config/config.json
 sudo sed -i '/"SqlSettings"/{n;s/postgres/mysql/g}' /opt/mattermost/config/config.json
 sudo sed -i '/"ClusterSettings"/{n;s/false/true/g}' /opt/mattermost/config/config.json
-sudo sed -i '/"InterNodeUrls"/c\        "InterNodeUrls": ["http://rhel-6-mm-ha-1","http://rhel-6-mm-ha-2"]' /opt/mattermost/config/config.json
+sudo sed -i '/"InterNodeUrls"/c\        "InterNodeUrls": ["http://ubuntu-14.04-mm-ha-1","http://ubuntu-14.04-mm-ha-2"]' /opt/mattermost/config/config.json
 sudo cat <<EOF > /etc/init/mattermost.conf
 start on runlevel [2345]
 stop on runlevel [016]
@@ -52,8 +53,8 @@ sudo service nginx start
 #Configure NGINX
 sudo cat <<EOF > /etc/nginx/sites-available/mattermost
 upstream backend {
-   server rhel-6-mm-ha-1:8065;
-   server rhel-6-mm-ha-2:8065;
+   server ubuntu-14.04-mm-ha-1:8065;
+   server ubuntu-14.04-mm-ha-2:8065;
 }
 
 proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=mattermost_cache:10m max_size=3g inactive=120m use_temp_path=off;

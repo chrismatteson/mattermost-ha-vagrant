@@ -29,27 +29,27 @@ vms:
     roles: [ "haproxy" ]
 
 # Ubuntu 14.04 demo
-  - name: "ubuntu-14.04-mm-ha-1"
+  - name: "ubuntu-1404-mm-ha-1"
     box: "puppetlabs/ubuntu-14.04-64-nocm"
     roles: [ "ubuntu-14.04-mm-ha" ]
 
-  - name: "ubuntu-14.04-mm-ha-2"
+  - name: "ubuntu-1404-mm-ha-2"
     box: "puppetlabs/ubuntu-14.04-64-nocm"
     roles: [ "ubuntu-14.04-mm-ha" ]
 
-  - name: "ubuntu-14.04-ha-proxy"
+  - name: "ubuntu-1404-ha-proxy"
     box: "puppetlabs/ubuntu-14.04-64-nocm"
     roles: [ "haproxy" ]
 
 # Ubuntu 16.04 demo
-  - name: "ubuntu-16.04-mm-ha-1"
+  - name: "ubuntu-1604-mm-ha-1"
     box: "ubuntu/xenial64"
     roles: [ "ubuntu-16.04-mm-ha" ]
 
-  - name: "ubuntu-16.04-mm-ha-2"
+  - name: "ubuntu-1604-mm-ha-2"
     box: "ubuntu/xenial64"
     roles: [ "ubuntu-16.04-mm-ha" ]
 
-  - name: "ubuntu-16.04-ha-proxy"
+  - name: "ubuntu-1604-ha-proxy"
     box: "ubuntu/xenial64"
     roles: [ "haproxy" ]

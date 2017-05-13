@@ -30,6 +30,9 @@ Each set of three VMs is configured with:
 3) Mattermost installed on each node and configured with a trial license and utilizing HA
 4) Mysql loaded on each node with only the first node being utilized
 
+## Mysql Replication
+Two additional scripts in the scripts folder setup mysql replication and configure the Ubuntu 16.04 to use a DataSourceReplica. The mysqlmaster.sh should be run on ha-1 and mysqlslave.sh should be run on ha-2. This this be done immediately after the boxes are stood up as any configuration including making an initial user will result in unreplicated changes.
+
 ## Known Issues
-1. In order to preserve the ability to dynamically assign ip addresses from vagrant, the nginx config includes dns entries for upstream instead of ip addresses. This potentially can result in nginx failing if both servers aren't up. Restarting nginx after the second server is up should resolve this issue.
+1. In order to preserve the ability to dynamically assign ip addresses from vagrant, the nginx config includes dns entries for upstream instead of ip addresses. This potentially can result in nginx failing if both servers aren't up. Restarting nginx after the second server is up should resolve this issue. This seems to in particular be an issue for Ubuntu 16.04
 2. In order to allow testing of all the components, firewall rules and access limitations are not locked down for any component. This would need to be resolved before placing these machines in production or on a public connection. Likewise SSL is not configured, but would need to be in production.

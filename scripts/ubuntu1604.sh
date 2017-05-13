@@ -58,7 +58,7 @@ sudo iptables -A INPUT -p tcp -m tcp --dport 8065 -j ACCEPT
 sudo iptables -A INPUT -p tcp -m tcp --dport 8075 -j ACCEPT
 iptables-save | sudo tee /etc/sysconfig/iptables
 (cd /opt/mattermost/bin/ && ./platform license upload /vagrant/license.mattermost-license)
-sudo start mattermost
+sudo systemctl restart mattermost.service
 
 #Install NGINX
 sudo apt-get install nginx -y
@@ -115,6 +115,7 @@ EOF
 sudo rm /etc/nginx/sites-enabled/default
 sudo ln -s /etc/nginx/sites-available/mattermost /etc/nginx/sites-enabled/mattermost
 sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+#sudo apt-get install iptables-persistent -y
 iptables-save | sudo tee /etc/sysconfig/iptables
 sudo service nginx restart
 

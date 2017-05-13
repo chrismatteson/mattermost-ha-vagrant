@@ -122,5 +122,5 @@ EOF
 sudo sed -i '/ENABLED/c\ENABLED=1' /etc/default/haproxy
 sudo service haproxy start
 sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-sudo apt-get install iptables-persistent
+sudo apt-get install iptables-persistent -y
 iptables-save | sudo tee /etc/iptables/rules.v4

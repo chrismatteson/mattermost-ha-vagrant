@@ -60,7 +60,7 @@ backend mattermost
     server  mm-ha-2 $MMHA2IP:80 check
 EOF
 sudo systemctl enable haproxy
-sudo systemctl start haproxy
+sudo systemctl restart haproxy
 sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
-sudo apt-get install iptables-persistent -y
+#sudo apt-get install iptables-persistent -y
 iptables-save | sudo tee /etc/iptables/rules.v4

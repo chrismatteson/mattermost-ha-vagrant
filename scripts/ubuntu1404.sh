@@ -44,6 +44,7 @@ sudo iptables -A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
 sudo iptables -A INPUT -p tcp -m tcp --dport 8065 -j ACCEPT
 sudo iptables -A INPUT -p tcp -m tcp --dport 8075 -j ACCEPT
 iptables-save | sudo tee /etc/iptables/rules.v4
+sudo service mattermost restart
 (cd /opt/mattermost/bin/ && ./platform license upload /vagrant/license.mattermost-license)
 sudo service mattermost restart
 
@@ -102,6 +103,6 @@ sudo rm /etc/nginx/sites-enabled/default
 sudo ln -s /etc/nginx/sites-available/mattermost /etc/nginx/sites-enabled/mattermost
 sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
 iptables-save | sudo tee /etc/iptables/rules.v4
-sudo apt-get install iptables-persistent
+sudo apt-get install iptables-persistent -y
 sudo service nginx restart
 

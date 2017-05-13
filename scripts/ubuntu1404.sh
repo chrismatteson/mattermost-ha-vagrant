@@ -1,14 +1,11 @@
 #!/bin/bash
 
 #prereq
-sudo yum update -y
-sudo yum upgrade -y
+sudo apt-get update -y
+sudo apt-get upgrade -y
 
 #Install mysql
-wget http://dev.mysql.com/get/mysql57-community-release-el6-9.noarch.rpm
-sudo yum localinstall mysql57-community-release-el6-9.noarch.rpm -y
-sudo yum install mysql-community-server -y
-sudo service mysqld start
+sudo apt-get install mysql-server-5.6 -y
 mysql -u root -p"`sudo grep 'temporary password' /var/log/mysqld.log | grep -oE '[^ ]+$'`" --connect-expired-password <<MYSQL_INPUT
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'Password42!';
 create user 'mmuser'@'%' identified by 'Password42!';
@@ -36,6 +33,7 @@ stop on runlevel [016]
 respawn
 limit nofile 50000 50000
 chdir /opt/mattermost
+setuid mattermost
 exec bin/platform
 EOF
 sudo chkconfig mattermost on
@@ -47,20 +45,12 @@ iptables-save | sudo tee /etc/sysconfig/iptables
 sudo start mattermost
 
 #Install NGINX
-sudo cat <<EOF > /etc/yum.repos.d/nginx.repo
-[nginx]
-name=nginx repo
-baseurl=http://nginx.org/packages/rhel/6/\$basearch/
-gpgcheck=0
-enabled=1
-EOF
-sudo yum install nginx.x86_64 -y
+sudo apt-get install nginx -y
 sudo service nginx start
-sudo chkconfig nginx on
+#sudo chkconfig nginx on
 
 #Configure NGINX
-#sudo cat <<EOF > /etc/nginx/sites-available/mattermost
-sudo cat <<EOF > /etc/nginx/conf.d/mattermost.conf
+sudo cat <<EOF > /etc/nginx/sites-available/mattermost
 upstream backend {
    server rhel-6-mm-ha-1:8065;
    server rhel-6-mm-ha-2:8065;
@@ -106,9 +96,8 @@ server {
    }
 }
 EOF
-#sudo rm /etc/nginx/sites-enabled/default
-sudo rm /etc/nginx/conf.d/default.conf
-#sudo ln -s /etc/nginx/sites-available/mattermost /etc/nginx/sites-enabled/mattermost
+sudo rm /etc/nginx/sites-enabled/default
+sudo ln -s /etc/nginx/sites-available/mattermost /etc/nginx/sites-enabled/mattermost
 sudo iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
 iptables-save | sudo tee /etc/sysconfig/iptables
 sudo service nginx restart

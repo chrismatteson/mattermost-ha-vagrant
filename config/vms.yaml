@@ -30,26 +30,26 @@ vms:
 
 # Ubuntu 14.04 demo
   - name: "ubuntu-14.04-mm-ha-1"
-    box: "puppetlabs/centos-7.2-64-nocm"
-    roles: [ "rhel-7-mm-ha" ]
+    box: "puppetlabs/ubuntu-14.04-64-nocm"
+    roles: [ "ubuntu-14.04-mm-ha" ]
 
   - name: "ubuntu-14.04-mm-ha-2"
-    box: "puppetlabs/centos-7.2-64-nocm"
-    roles: [ "rhel-7-mm-ha" ]
+    box: "puppetlabs/ubuntu-14.04-64-nocm"
+    roles: [ "ubuntu-14.04-mm-ha" ]
 
   - name: "ubuntu-14.04-ha-proxy"
-    box: "puppetlabs/centos-7.2-64-nocm"
+    box: "puppetlabs/ubuntu-14.04-64-nocm"
     roles: [ "haproxy" ]
 
 # Ubuntu 16.04 demo
   - name: "ubuntu-16.04-mm-ha-1"
-    box: "puppetlabs/centos-7.2-64-nocm"
-    roles: [ "rhel-7-mm-ha" ]
+    box: "ubuntu/xenial64"
+    roles: [ "ubuntu-16.04-mm-ha" ]
 
   - name: "ubuntu-16.04-mm-ha-2"
-    box: "puppetlabs/centos-7.2-64-nocm"
-    roles: [ "rhel-7-mm-ha" ]
+    box: "ubuntu/xenial64"
+    roles: [ "ubuntu-16.04-mm-ha" ]
 
   - name: "ubuntu-16.04-ha-proxy"
-    box: "puppetlabs/centos-7.2-64-nocm"
+    box: "ubuntu/xenial64"
     roles: [ "haproxy" ]

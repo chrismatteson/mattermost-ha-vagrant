@@ -7,13 +7,13 @@ sudo apt-get upgrade -y
 #Install mysql
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password Password42!'
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password Password42!'
-sudo apt-get install mysql-server-5.6 -y
+sudo apt-get install mysql-server -y
 mysql -u root -p"Password42!" <<MYSQL_INPUT
 create user 'mmuser'@'%' identified by 'Password42!';
 create database mattermost;
 grant all privileges on mattermost.* to 'mmuser'@'%';
 MYSQL_INPUT
-sudo sed -i '/bind-address/c\bind-address            = *' /etc/mysql/my.cnf
+sudo sed -i '/bind-address/c\bind-address            = *' /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo service mysql restart
 
 #Install mattermost
@@ -25,7 +25,7 @@ sudo ln -s /vagrant/data/ubuntu1604 /opt/mattermost/data
 sudo useradd --system --user-group mattermost
 sudo chown -R mattermost:mattermost /opt/mattermost
 sudo chmod -R g+w /opt/mattermost
-sudo sed -i '/"DataSource":/c\        "DataSource": "mmuser:Password42!@tcp(ubuntu-1504-mm-ha-1:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s",' /opt/mattermost/config/config.json
+sudo sed -i '/"DataSource":/c\        "DataSource": "mmuser:Password42!@tcp(ubuntu-1604-mm-ha-1:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s",' /opt/mattermost/config/config.json
 #sudo sed -i '/"DataSourceReplicas":/c\        "DataSourceReplicas": ["mmuser:Password42!@tcp(ubuntu-1604-mm-ha-2:3306)/mattermost?charset=utf8mb4,utf8&readTimeout=30s&writeTimeout=30s"],' /opt/mattermost/config/config.json
 sudo sed -i '/"SqlSettings"/{n;s/postgres/mysql/g}' /opt/mattermost/config/config.json
 sudo sed -i '/"ClusterSettings"/{n;s/false/true/g}' /opt/mattermost/config/config.json
@@ -34,8 +34,8 @@ sudo cat <<EOF > /lib/systemd/system/mattermost.service
 [Unit]
 Description=Mattermost
 After=network.target
-After=postgresql.service
-Requires=postgresql.service
+After=mysql.service
+Requires=mysql.service
 
 [Service]
 Type=simple
@@ -50,7 +50,7 @@ LimitNOFILE=49152
 [Install]
 WantedBy=multi-user.target
 EOF
-sudo systemctl daemon-relaod
+sudo systemctl daemon-reload
 sudo systemctl start mattermost.service
 sudo systemctl enable mattermost.service
 sudo iptables -A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
